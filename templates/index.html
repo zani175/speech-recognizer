@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech-to-Text Evaluation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Speech-to-Text Evaluation</h1>
+        
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <button class="mode-btn active" data-mode="text">Text-to-Text Comparison</button>
+            <button class="mode-btn" data-mode="speech">Speech-to-Text</button>
+            <button class="mode-btn" data-mode="file">Audio File-to-Text</button>
+        </div>
+
+        <!-- Text-to-Text Section -->
+        <div class="section active" id="textToTextSection">
+            <h2>Text-to-Text Comparison</h2>
+            <div class="text-comparison">
+                <div class="text-box">
+                    <h3>Reference Text</h3>
+                    <textarea id="referenceText" placeholder="Enter the reference text here..."></textarea>
+                </div>
+                <div class="text-box">
+                    <h3>Hypothesis Text</h3>
+                    <textarea id="hypothesisText" placeholder="Enter the hypothesis text here..."></textarea>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="calculateTextWER">📊 Calculate WER</button>
+            </div>
+        </div>
+
+        <!-- Speech-to-Text Section -->
+        <div class="section" id="speechToTextSection">
+            <h2>Speech-to-Text</h2>
+            <div class="action-buttons">
+                <button id="startRecording">🎤 Start Recording</button>
+                <button id="stopRecording" disabled>⏹️ Stop Recording</button>
+            </div>
+            <div class="text-box" style="margin-top: 20px;">
+                <h3>Reference Text</h3>
+                <textarea id="speechReferenceText" placeholder="Enter the reference text here..."></textarea>
+            </div>
+            <div class="text-box">
+                <h3>Recognized Text</h3>
+                <textarea id="speechRecognizedText" readonly placeholder="Recognized text will appear here..."></textarea>
+            </div>
+            <div class="action-buttons">
+                <button id="calculateSpeechWER">📊 Calculate WER</button>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="section" id="fileToTextSection">
+            <h2>Audio File-to-Text</h2>
+            <div class="file-upload">
+                <input type="file" id="audioFile" accept=".wav,.mp3">
+                <label for="audioFile" class="file-upload-btn">📁 Choose Audio File</label>
+            </div>
+            <div class="text-box" style="margin-top: 20px;">
+                <h3>Reference Text</h3>
+                <textarea id="fileReferenceText" placeholder="Enter the reference text here..."></textarea>
+            </div>
+            <div class="text-box">
+                <h3>Recognized Text</h3>
+                <textarea id="fileRecognizedText" readonly placeholder="Recognized text will appear here..."></textarea>
+            </div>
+            <div class="action-buttons">
+                <button id="calculateFileWER">📊 Calculate WER</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="result" id="resultSection" style="display: none;">
+            <h2>Results</h2>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-value" id="werValue">0%</div>
+                    <div class="stat-label">Word Error Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalWords">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="correctWords">0</div>
+                    <div class="stat-label">Correct Words</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="werChart"></canvas>
+            </div>
+            <div class="word-differences">
+                <h3>Word Differences</h3>
+                <div class="word-differences-grid">
+                    <div class="word-differences-box">
+                        <h4>Substitutions</h4>
+                        <ul id="substitutionsList" class="word-list"></ul>
+                    </div>
+                    <div class="word-differences-box">
+                        <h4>Insertions</h4>
+                        <ul id="insertionsList" class="word-list"></ul>
+                    </div>
+                    <div class="word-differences-box">
+                        <h4>Deletions</h4>
+                        <ul id="deletionsList" class="word-list"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="downloadReport">📥 Download Report</button>
+                <button id="moreDetailsBtn" type="button">📊 More Details</button>
+            </div>
+        </div>
+
+        <!-- ML Details Section (hidden by default) -->
+        <div class="ml-details" id="mlDetailsSection" style="display:none; margin-top: 30px;">
+            <h2>ML Analysis</h2>
+            <div class="ml-graph-container">
+                <h3>Confusion Matrix</h3>
+                <img id="confusionMatrixImg" alt="Confusion Matrix" style="max-width: 350px; display: block; margin-bottom: 20px;" />
+            </div>
+            <div class="ml-table-container">
+                <table class="ml-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Words</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>TP</td><td id="tpWords"></td></tr>
+                        <tr><td>TN</td><td id="tnWords"></td></tr>
+                        <tr><td>FP</td><td id="fpWords"></td></tr>
+                        <tr><td>FN</td><td id="fnWords"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
